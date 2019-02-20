@@ -1,6 +1,6 @@
 const Joi = require('joi')
 
-exports.validateAdmin = (req, res, next) => {
+exports.validateDriver = (req, res, next) => {
         const schema = {
                 username: Joi.string().min(3).required(),
                 password: Joi.string().min(3).required(),

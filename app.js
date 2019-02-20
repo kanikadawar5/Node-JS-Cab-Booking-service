@@ -13,8 +13,7 @@ server.listen(port, function () {
 
 const admin = require('./admin/admin')
 const customer = require('./customers/customers')
-
-// const admin = require('./admin/admin')
+const driver = require('./driver/driver')
 // const admin = require('./admin/admin')
 
 app.use(body_parser.urlencoded ({extended: false}))     //true for extended bodies with rich body in it
@@ -22,3 +21,4 @@ app.use(body_parser.json())
 
 app.use('/admin',admin)
 app.use('/customer',customer)
+app.use('/driver',driver)

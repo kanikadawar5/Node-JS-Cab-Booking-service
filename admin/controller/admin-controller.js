@@ -23,7 +23,7 @@ exports.registerAdmin =async (req,res) => {
                     token
                 ]
             let result = await services.registerAdmin(values)
-            res.send(responses.sendResponse(res,"User registered succesfully",200,result))
+            res.send(responses.sendResponse(res,"User registered succesfully",200,values))
         }
         else
         res.send(responses.sendErrorResponse(res,"Already two admins",400,req.body))

@@ -47,28 +47,21 @@ exports.viewAllBookings = async (values,username) => {
 
 exports.assignDriver = async (admin) => {
         return promise.coroutine(function*(){
-        const result = yield runQuery('(SELECT user_type FROM `Users` WHERE `username`=?)', [username])
-        console.log(result)
-        // for(let i=0;i<result.length;i++)
-        // {
-        //     const match = yield bcrypt.compare(password, result[i].password)
-        //     if(match && result[i].username == username)
-        //     {
-        //         let values1 = ["available"]
-        //         let sql1 = 'SELECT * FROM driver_details WHERE availability_status = ?'
-        //         const drivers = yield runQuery(sql1,values1)
-        //         // let values2 = ["assigned","on_duty"]
-        //         // let sql2 = 'UPDATE Bookings SET driver_id = ?, booking_status = ?'
-        //         // let values1 = ["pending"]
-        //         let sql1 = 'SELECT * FROM Bookings WHERE availability_status = ?'
-        //         let values3 = ["on_duty"]
-        //         let sql3 = 'UPDATE driver_details SET availability_status = ? WHERE driver_id = ?'
-        //         const result2 = yield runQuery(sql2, values2)
-        //         console.log(result2)
-        //         //const result3 = yield runQuery(sql3, values3)
-        //         if(result1 && result2)
-        //         return result1
-        //     }
-        // }
+                let sql = 'SELECT * FROM bookings WHERE booking_status = 0'
+                let bookings = yield runQuery(sql)
+                console.log(bookings.length)
+                for(let i =0 ; i<bookings.length ; i++)
+                {
+                        let sql1 = 'UPDATE bookings SET driver_id = (SELECT driver_id FROM driver_details WHERE availability_status = 0 LIMIT 1), booking_status = 1 WHERE booking_id = ?'
+                        let values1 = [bookings[i].booking_id]
+                        let result1 = yield runQuery(sql1,values1)
+                        let sql2 = 'UPDATE driver_details SET availability_status = 1 WHERE driver_id = (SELECT driver_id FROM bookings WHERE booking_id = ?)'
+                        if(result1)
+                        {let result2 = yield runQuery(sql2,values1)
+                        }
+                }
+                let sql1 = 'SELECT * FROM bookings'
+                let result2 = yield runQuery(sql1)
+                return result2
         })();
 }

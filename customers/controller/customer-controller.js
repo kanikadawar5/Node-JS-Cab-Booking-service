@@ -6,11 +6,11 @@ const responses = require('./../../responses/responses')
 const services = require('./../services/customer-services')
 
 exports.registerCustomer =async (req,res) => {
-    let hash = bcrypt.hashSync(req.body.password, constants.SALT_ROUNDS);
-    let payload = { un : req.body.username, pw : req.body.password}
-    let token = jwt.sign(payload, constants.KEY, constants.SIGNOPTIONS)
-    console.log(token)
-    let values = [
+        let hash = bcrypt.hashSync(req.body.password, constants.SALT_ROUNDS);
+        let payload = { un : req.body.username, pw : req.body.password}
+        let token = jwt.sign(payload, constants.KEY, constants.SIGNOPTIONS)
+        console.log(token)
+        let values = [
         req.body.username,
         hash,
         "1",
@@ -18,8 +18,9 @@ exports.registerCustomer =async (req,res) => {
         req.body.last_name,
         req.body.phone_number,
         req.body.email
-    ]
-        let result = await services.registerCustomer(values)
+        ]
+        let values1 = [username]
+        let result = await services.registerCustomer(values,values1)
         if(result.affectedRows = 0)
         res.send(responses.sendErrorResponse(res,"Send data correctly",400,result))
         else
