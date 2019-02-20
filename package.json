@@ -1,0 +1,17 @@
+{
+  "name": "assign3",
+  "version": "1.0.0",
+  "description": "assignment 3",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kanika dawar",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^3.0.4",
+    "bluebird": "^3.5.3",
+    "jsonwebtoken": "^8.4.0",
+    "jwt-decode": "^2.2.0"
+  }
+}
