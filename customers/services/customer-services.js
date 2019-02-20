@@ -5,58 +5,32 @@ const jwt = require('jsonwebtoken')
 const {runQuery} = require('./../../databases/db-connection')
 const promise=require('bluebird')
 
-exports.registerCustomer =async (customer) => {
+// module.exports viewAllBookings = viewAllBookings
+exports.registerCustomer =async (values) => {
     return promise.coroutine(function*(){
-        var hash = bcrypt.hashSync(customer.password, constants.SALT_ROUNDS);
-        let payload = { un : customer.username, pw : customer.password}
-        let token = jwt.sign(payload, constants.KEY, constants.SIGNOPTIONS)
-        let values = [
-            customer.username,
-            hash,
-            "passenger",
-            customer.first_name,
-            customer.last_name,
-            customer.phone_number,
-            customer.email_id,
-            token
-        ]
-    let sql = 'INSERT INTO `Users`(`username`, `password`, `user_type`, `first_name`, `last_name`, `phone_number`, `email_id`,`token`) VALUES (?,?,?,?,?,?,?,?)'
+    let sql = 'INSERT INTO `users`(`username`, `password`, `user_type`, `first_name`, `last_name`, `phone_number`, `email`) VALUES (?,?,?,?,?,?,?)'
     const result = yield runQuery(sql,values)
-    return result[0]
+    return result
     })();
 }
 
-exports.loginCustomer = async (customer) => {
+exports.loginCustomer = async (values,password) => {
     return promise.coroutine(function*(){
-        const payload = { un: customer.username, pw: customer.password}
-        let values1 = [
-                jwt.sign(payload, constants.KEY),
-                customer.username
-        ]
-        let values2 = [ customer.username ]
-        let sql2 = 'SELECT password FROM Users WHERE username = ?'
-        const passwordDb = yield runQuery(sql2,values2)
-        const match = yield bcrypt.compare(customer.password, passwordDb[0].password)
+        let sql = 'SELECT * FROM users WHERE username = ?'
+        const customer = yield runQuery(sql,values)
+        const match = yield bcrypt.compare(password, customer[0].password)
         if(match)
-        {
-            let sql1 = 'UPDATE `Users` SET `token`= ? where username = ?'
-            const result = yield runQuery(sql1,values1)
-            return result[0]
-        }
+        return customer
         })();
 }
 
-exports.createBooking = async (customer) => {
+exports.createBooking = async (values, customer, password, username) => {
         return promise.coroutine(function*(){
-            let decoded = jwtDecode(customer.token)
-            let username = decoded.un
-            let password = decoded.pw
-            let values = [username]
-            let sql = '(SELECT * FROM `Users` WHERE `username` = ?)'
+            let sql = '(SELECT * FROM `users` WHERE `username` = ?)'
             const result = yield runQuery(sql, values)
             let values1 = [
                 result[0].user_id,
-                "pending",
+                "0",
                 customer.pickup_latitude,
                 customer.pickup_longitude,
                 customer.drop_latitude,
@@ -65,9 +39,14 @@ exports.createBooking = async (customer) => {
             const match = yield bcrypt.compare(password, result[0].password)
             if(match && result[0].username == username)
             {
-                    let sql1 = 'INSERT INTO `Bookings`(`customer_id`, `booking_status`, `pickup_latitude`, `pickup_longitude`, `drop_latitude`, `drop_longitude`) VALUES (?,?,?,?,?,?)'
+                    let sql1 = 'INSERT INTO bookings(customer_id, booking_status, pickup_latitude, pickup_longitude, drop_latitude, drop_longitude) VALUES (?,?,?,?,?,?)'
                     const bookings = yield runQuery(sql1,values1)
                     return bookings
             }
             })();
 }
+
+exports.viewAllBookings = promise.coroutine(function*(values){
+        let sql = 'SELECT * FROM bookings WHERE user_id = (SELECT user_id FROM users WHERE username = ?)'
+        return yield runQuery(sql,values)
+});

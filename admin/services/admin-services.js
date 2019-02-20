@@ -8,71 +8,40 @@ const promise=require('bluebird')
 exports.loggedAdminCheck =async () => {
         let values = "admin"
         return promise.coroutine(function*(){
-        let sql = '(SELECT COUNT(*) AS count FROM `Users` WHERE `user_type` = ?)'
+        let sql = '(SELECT COUNT(*) AS count FROM `users` WHERE `user_type` = ?)'
         const result = yield  runQuery(sql,values)
         return result[0].count
         })();
 }
 
-exports.registerAdmin = async (admin) => {
+exports.registerAdmin = async (values) => {
         return promise.coroutine(function*(){
-            var hash = bcrypt.hashSync(admin.password, constants.SALT_ROUNDS);
-            let payload = { un : admin.username, pw : admin.password}
-            let token = jwt.sign(payload, constants.KEY, constants.SIGNOPTIONS)
-            let values = [
-                admin.username,
-                hash,
-                "admin",
-                admin.first_name,
-                admin.last_name,
-                admin.phone_number,
-                admin.email_id,
-                token
-            ]
-        let sql = 'INSERT INTO `Users`(`username`, `password`, `user_type`, `first_name`, `last_name`, `phone_number`, `email_id`,`token`) VALUES (?,?,?,?,?,?,?,?)'
+        let sql = 'INSERT INTO `users`(`username`, `password`, `user_type`, `first_name`, `last_name`, `phone_number`, `email`) VALUES (?,?,?,?,?,?,?)'
         const result = yield runQuery(sql,values)
-        return result[0]
+        return result
         })();
 }
 
-exports.loginAdmin = async (admin) => {
+exports.loginAdmin = (values1,admin) => {
         return promise.coroutine(function*(){
-        const payload = { un: admin.username, pw: admin.password}
-        let values1 = [
-                jwt.sign(payload, constants.KEY),
-                admin.username
-        ]
-        let values2 = [ admin.username ]
-        let sql2 = 'SELECT password FROM Users WHERE username = ?'
-        const passwordDb = yield runQuery(sql2,values2)
-        const match = yield bcrypt.compare(admin.password, passwordDb[0].password)
-        if(match)
-        {
-            let sql1 = 'INSERT INTO Users (token) VALUES (?) where username = ?'
-            const result = yield runQuery(sql1,values1)
-            return result[0]
-        }
+        let sql1 = 'SELECT * FROM `users` WHERE username = ?'
+        const adminDb = yield runQuery(sql1,values1)
+        const match = yield bcrypt.compare(admin.password, adminDb[0].password)
+        if(match) return adminDb
         })();
 }
 
-exports.viewAllBookings = async (admin) => {
+exports.viewAllBookings = async (values,username) => {
         return promise.coroutine(function*(){
-        let decoded = jwtDecode(admin.token)
-        let username = decoded.un
-        let password = decoded.pw
-        let values = ["admin"]
-        let sql = '(SELECT * FROM `Users` WHERE `user_type` = ?)'
+        let sql = 'SELECT COUNT(*) AS count FROM `users` WHERE `user_type` = ? AND username = ?'
         const result = yield runQuery(sql, values)
-        for(let i=0;i<result.length;i++)
-        {
-            const match = yield bcrypt.compare(password, result[i].password)
-            if(match && result[i].username == username)
+        console.log(result)
+            if(result[0].count == 1)
             {
-                let sql1 = 'SELECT * FROM Bookings'
+                let sql1 = 'SELECT * FROM bookings'
                 const bookings = yield runQuery(sql1)
                 return bookings
             }
-        }
         })();
 }
 
