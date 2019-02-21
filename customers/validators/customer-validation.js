@@ -1,4 +1,3 @@
-var Promise = require('bluebird')
 const Joi = require('joi')
 
 exports.validateCustomer = (req, res, next) => {

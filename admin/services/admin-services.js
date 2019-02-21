@@ -8,9 +8,25 @@ const {
 const promise = require('bluebird')
 const moment = require('moment')
 
-exports.checkDuplicate = promise.coroutine(function*(username){
-        let sql = 'SELECT COUNT(*) AS count FROM users WHERE username = ?'
-        return yield runQuery(sql,username)
+exports.checkDrivers = promise.coroutine(function*(values){
+        let sql = 'SELECT COUNT(*) FROM driver_details WHERE availability_status=0'
+        return yield runQuery(sql,values)
+})
+
+exports.checkBookings = promise.coroutine(function*(values){
+        let sql = 'SELECT COUNT(*) FROM bookings WHERE booking_status=0'
+        return yield runQuery(sql,values)
+})
+
+exports.checkDuplicate = promise.coroutine(function*(values){
+        let sql = 'SELECT COUNT(*) FROM users WHERE username=?'
+        return yield runQuery(sql,values)
+})
+
+exports.inDB = promise.coroutine(function*(values){
+        let sql = 'SELECT * FROM users WHERE username = ?'
+        let values1 = [values.username]
+        return yield runQuery(sql,values1)
 })
 
 exports.loggedAdminCheck = promise.coroutine(function*(admin) {

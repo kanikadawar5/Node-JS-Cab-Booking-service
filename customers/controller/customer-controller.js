@@ -10,8 +10,6 @@ const moment = require('moment')
 exports.registerCustomer = promise.coroutine(function*(req, res) {
         let values = [req.body.username]
         let result = yield services.checkDuplicate(values)
-        if (result[0].count != 0)
-                responses.sendErrorResponse(res, "You are already registered", 400, result)
         let hash = bcrypt.hashSync(req.body.password, constants.SALT_ROUNDS);
         let payload = {
                 un: req.body.username,
@@ -41,7 +39,6 @@ exports.registerCustomer = promise.coroutine(function*(req, res) {
 exports.loginCustomer = promise.coroutine(function*(req, res) {
         try {
                 let inDB = yield services.inDB(req.body)
-                console.log(inDB)
                 if (inDB.length == 0)
                         res.send(responses.sendResponse(res, "Register first", 400))
                 const payload = {
