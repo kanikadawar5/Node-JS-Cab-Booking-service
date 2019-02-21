@@ -2,7 +2,7 @@ var jwtDecode = require('jwt-decode')
 const constants = require('./../../constants/constants')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const {runQuery} = require('./../../databases/db-connection')
+const {runQuery} = require('../../databases/sql-connection')
 const promise=require('bluebird')
 
 exports.registerDriver = promise.coroutine(function*(values, values1, driver){
@@ -30,12 +30,12 @@ exports.registerDriver = promise.coroutine(function*(values, values1, driver){
 })
 
 exports.loginDriver = promise.coroutine(function*(values,password){
-        let sql = 'SELECT * FROM driver_details WHERE user_id = (SELECT user_id from users WHERE username = ?)'
+        let sql = 'SELECT * FROM driver_details WHERE driver_id = (SELECT driver_id FROM driver_details WHERE user_id = (SELECT user_id FROM users WHERE username = ?))'
         let driver = yield runQuery(sql,values)
         let sql1 = 'SELECT * FROM users WHERE username = ?'
         let users = yield runQuery(sql1, values)
         const match = yield bcrypt.compare(password, users[0].password)
-        if(match)
+        if(match && driver)
         return driver
 })
 
@@ -65,5 +65,6 @@ exports.viewAssignedBookings = promise.coroutine(function*(values) {
 
 exports.viewAllBookings = promise.coroutine(function*(values){
         let sql = 'SELECT * FROM bookings WHERE user_id = (SELECT user_id FROM users WHERE username = ?)'
-        return yield runQuery(sql,values)
+        let result = yield runQuery(sql,values)
+        return result
 })

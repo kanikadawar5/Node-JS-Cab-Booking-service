@@ -5,8 +5,8 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const services = require('./../services/admin-services')
 
-exports.registerAdmin =async (req,res) => {
-        let numberOfLoggedInAdmins  = await services.loggedAdminCheck(req.body)
+exports.registerAdmin = async(req,res) => {
+        let numberOfLoggedInAdmins  =  services.loggedAdminCheck(req.body)
         if(numberOfLoggedInAdmins < 2)
         {
                 var hash = bcrypt.hashSync(req.body.password, constants.SALT_ROUNDS);
@@ -22,19 +22,19 @@ exports.registerAdmin =async (req,res) => {
                     req.body.email,
                     token
                 ]
-            let result = await services.registerAdmin(values)
+            let result =  await services.registerAdmin(values)
             res.send(responses.sendResponse(res,"User registered succesfully",200,values))
         }
         else
         res.send(responses.sendErrorResponse(res,"Already two admins",400,req.body))
 }
 
-exports.loginAdmin = async (req,res) => {
+exports.loginAdmin =  async(req,res) => {
         const payload = { un: req.body.username, pw: req.body.password}
         let values1 = [ req.body.username ]
         let token = jwt.sign(payload, constants.KEY)
         console.log(token)
-        let data = await services.loginAdmin(values1,req.body)
+        let data = await services.loginAdmin(values1,req.body.password)
         if(data && token)
         res.send(responses.sendResponse(res,"User logged in succesfully",200,data))
         else
@@ -42,6 +42,7 @@ exports.loginAdmin = async (req,res) => {
 }
 
 exports.viewAllBookings = async (req,res) => {
+        console.log(req.body.token)
         let decoded = jwtDecode(req.body.token)
         let username = decoded.un
         let values = [

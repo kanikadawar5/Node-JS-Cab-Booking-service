@@ -1,0 +1,484 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "description": "Assignment 3",
+        "title": "assignment 3"
+    },
+    "host": "localhost:3001",
+    "basePath": "/",
+    "schemes": [
+        "http"
+    ],
+    "paths": {
+        "/admin/register": {
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "description": "Register an admin",
+                "parameters": [{
+                        "type": "string",
+                        "description": "username",
+                        "name": "username",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "password",
+                        "name": "password",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "first_name",
+                        "name": "first_name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "last_name",
+                        "name": "last_name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "phone_number",
+                        "name": "phone_number",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "email",
+                        "name": "email",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successfully registered"
+                    },
+                    "400": {
+                        "description": "Error in registering"
+                    }
+                }
+            }
+        },
+        "/admin/login": {
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "description": "Admin Login",
+                "parameters": [{
+                    "type": "string",
+                    "description": "username",
+                    "name": "username",
+                    "in": "formData"
+                },
+                {
+                    "type": "string",
+                    "description": "password",
+                    "name": "password",
+                    "in": "formData"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "successfully logged in."
+                    },
+                    "400": {
+                        "description": "Error in logging"
+                    }
+                }
+            }
+        },
+        "/admin/viewAllBookings": {
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "description": "View all bookings",
+                "parameters": [{
+                    "type": "string",
+                    "description": "token",
+                    "name": "token",
+                    "in": "header"
+                }
+            ],
+                "responses": {
+                    "200": {
+                        "description": "Viewing all bookings succesfully."
+                    },
+                    "400": {
+                        "description": "Error in getting bookings"
+                    }
+                }
+            }
+        },
+        "/admin/assignDriver": {
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "description": "assign driver to a ride",
+                "parameters": [{
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successfully log in."
+                    },
+                    "400": {
+                        "description": "Error in registering"
+                    }
+                }
+            }
+        },
+        "/customer/register": {
+            "post": {
+                "tags": [
+                    "customer"
+                ],
+                "description": "Register an admin",
+                "parameters": [{
+                        "type": "string",
+                        "description": "username",
+                        "name": "username",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "password",
+                        "name": "password",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "first_name",
+                        "name": "first_name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "last_name",
+                        "name": "last_name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "phone_number",
+                        "name": "phone_number",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "email",
+                        "name": "email",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successfully registered"
+                    },
+                    "400": {
+                        "description": "Error in registering"
+                    }
+                }
+            }
+        },
+        "/customer/login": {
+            "post": {
+                "tags": [
+                    "customer"
+                ],
+                "description": "Customer login",
+                "parameters": [{
+                    "type": "string",
+                    "description": "username of driver",
+                    "name": "username",
+                    "in": "formData"
+                },
+                {
+                    "type": "string",
+                    "description": "password",
+                    "name": "password",
+                    "in": "formData"
+                }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successfully logged customer"
+                    },
+                    "400": {
+                        "description": "Error in logging customer"
+                    }
+                }
+            }
+        },
+        "/customer/createBooking": {
+            "post": {
+                "tags": [
+                    "customer"
+                ],
+                "description": "Creates booking",
+                "parameters": [{
+                    "type": "string",
+                    "description": "token",
+                    "name": "token",
+                    "in": "formData"
+                },
+                {
+                    "type": "string",
+                    "description": "pickup_latitude",
+                    "name": "pickup_latitude",
+                    "in": "formData"
+                },
+                {
+                    "type": "string",
+                    "description": "pickup_longitude",
+                    "name": "pickup_longitude",
+                    "in": "formData"
+                },
+                {
+                    "type": "string",
+                    "description": "drop_latitude",
+                    "name": "drop_latitude",
+                    "in": "formData"
+                },
+                {
+                    "type": "string",
+                    "description": "drop_longitude",
+                    "name": "drop_longitude",
+                    "in": "formData"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Created booking."
+                    },
+                    "400": {
+                        "description": "Error in creating booking"
+                    }
+                }
+            }
+        },
+        "/customer/viewAllBookings": {
+            "post": {
+                "tags": [
+                    "customer"
+                ],
+                "description": "showing all the bookings of the customer",
+                "parameters": [{
+                    "type": "string",
+                    "description": "token",
+                    "name": "token",
+                    "in": "formData"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "successfully signed up."
+                    },
+                    "400": {
+                        "description": "Error in registering"
+                    }
+                }
+            }
+        },
+        "/driver/register": {
+            "post": {
+                "tags": [
+                    "driver"
+                ],
+                "description": "Register a driver",
+                "parameters": [
+                    {  
+                    "type": "string",
+                    "description": "username",
+                    "name": "username",
+                    "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "first name of driver",
+                        "name": "first_name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "last name of driver",
+                        "name": "last_name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Password",
+                        "name": "password",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "email",
+                        "description": "email of driver",
+                        "name": "email",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "number",
+                        "description": "contact number of driver",
+                        "name": "phone_number",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "float",
+                        "description": "latitude points of driver default address",
+                        "name": "current_latitude",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "float",
+                        "description": "longitude points of driver default address",
+                        "name": "current_longitude",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "driver license",
+                        "name": "driver_license",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "number",
+                        "description": "aadhar_card",
+                        "name": "aadhar_card",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "number",
+                        "description": "availability_status",
+                        "name": "availability_status",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "date",
+                        "description": "driver_license_expiry_date",
+                        "name": "driver_license_expiry_date",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successfully signed up."
+                    },
+                    "400": {
+                        "description": "Error in registering"
+                    }
+                }
+            }
+        },
+        "/driver/login": {
+            "post": {
+                "tags": [
+                    "driver"
+                ],
+                "description": "Login a driver",
+                "parameters": [{  
+                    "type": "string",
+                    "description": "username",
+                    "name": "username",
+                    "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Password",
+                        "name": "password",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successfully log in."
+                    },
+                    "400": {
+                        "description": "Error in logging"
+                    }
+                }
+            }
+        },
+        "/driver/viewAssignedBookings": {
+            "post": {
+                "tags": [
+                    "driver"
+                ],
+                "description": "View assigned bookings",
+                "parameters": [{
+                    "type": "string",
+                    "description": "token",
+                    "name": "token",
+                    "in": "formData"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "400": {
+                        "description": "Error"
+                    }
+                }
+            }
+        },
+        "/driver/viewAllBookings": {
+            "post": {
+                "tags": [
+                    "driver"
+                ],
+                "description": "see all the bookings",
+                "parameters": [{
+                    "type": "string",
+                    "description": "token",
+                    "name": "token",
+                    "in": "formData"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "successfully log in."
+                    },
+                    "400": {
+                        "description": "Error in registering"
+                    }
+                }
+            }
+        },
+        "/driver/completeBooking": {
+            "post": {
+                "tags": [
+                    "driver"
+                ],
+                "description": "complete a ride",
+                "parameters": [{
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "number",
+                        "description": "booking_id",
+                        "name": "booking_id",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "400": {
+                        "description": "Error"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -2,8 +2,9 @@ var jwtDecode = require('jwt-decode')
 const constants = require('./../../constants/constants')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const {runQuery} = require('./../../databases/db-connection')
+const {runQuery} = require('../../databases/sql-connection')
 const promise=require('bluebird')
+const moment = require('moment')
 
 exports.loggedAdminCheck =async () => {
         let values = "admin"
@@ -22,11 +23,11 @@ exports.registerAdmin = async (values) => {
         })();
 }
 
-exports.loginAdmin = (values1,admin) => {
+exports.loginAdmin = (values1,password) => {
         return promise.coroutine(function*(){
         let sql1 = 'SELECT * FROM `users` WHERE username = ?'
         const adminDb = yield runQuery(sql1,values1)
-        const match = yield bcrypt.compare(admin.password, adminDb[0].password)
+        const match = yield bcrypt.compare(password, adminDb[0].password)
         if(match) return adminDb
         })();
 }
@@ -35,7 +36,6 @@ exports.viewAllBookings = async (values,username) => {
         return promise.coroutine(function*(){
         let sql = 'SELECT COUNT(*) AS count FROM `users` WHERE `user_type` = ? AND username = ?'
         const result = yield runQuery(sql, values)
-        console.log(result)
             if(result[0].count == 1)
             {
                 let sql1 = 'SELECT * FROM bookings'
@@ -49,7 +49,6 @@ exports.assignDriver = async (admin) => {
         return promise.coroutine(function*(){
                 let sql = 'SELECT * FROM bookings WHERE booking_status = 0'
                 let bookings = yield runQuery(sql)
-                console.log(bookings.length)
                 for(let i =0 ; i<bookings.length ; i++)
                 {
                         let sql1 = 'UPDATE bookings SET driver_id = (SELECT driver_id FROM driver_details WHERE availability_status = 0 LIMIT 1), booking_status = 1 WHERE booking_id = ?'
@@ -62,6 +61,12 @@ exports.assignDriver = async (admin) => {
                 }
                 let sql1 = 'SELECT * FROM bookings'
                 let result2 = yield runQuery(sql1)
+                let date = moment().format('MMMM Do YYYY , h:mm:ss a'); 
+                let logs = ["Driver with ", result2[0].driver_id, "changes status of booking at", date]; 
+                let result3 = logs.join(' '); 
+                dbo.collection("assignedRides").insertOne({ 
+                logs: result3
+});
                 return result2
         })();
 }

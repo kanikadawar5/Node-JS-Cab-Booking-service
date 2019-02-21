@@ -5,7 +5,7 @@ const controller = require('./controller/admin-controller.js')
 
 router.post('/register',validator.validateAdmin,controller.registerAdmin)
 router.post('/login',validator.validateAdmin,controller.loginAdmin)
-router.get('/viewAllBookings',controller.viewAllBookings)
-router.get('/assignDriver',controller.assignDriver)
+router.post('/viewAllBookings',controller.viewAllBookings)
+router.post('/assignDriver',controller.assignDriver)
 
 module.exports = router

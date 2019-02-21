@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const responses = require('./../../responses/responses') 
 const services = require('./../services/customer-services')
 
-exports.registerCustomer =async (req,res) => {
+exports.registerCustomer = async(req,res) => {
         let hash = bcrypt.hashSync(req.body.password, constants.SALT_ROUNDS);
         let payload = { un : req.body.username, pw : req.body.password}
         let token = jwt.sign(payload, constants.KEY, constants.SIGNOPTIONS)
@@ -19,8 +19,8 @@ exports.registerCustomer =async (req,res) => {
         req.body.phone_number,
         req.body.email
         ]
-        let values1 = [username]
-        let result = await services.registerCustomer(values,values1)
+        let values1 = [req.body.username]
+        let result = await services.registerCustomer(values)
         if(result.affectedRows = 0)
         res.send(responses.sendErrorResponse(res,"Send data correctly",400,result))
         else
@@ -42,7 +42,7 @@ exports.createBooking = async (req,res) => {
         let username = decoded.un
         let password = decoded.pw
         let values = [username]
-        let result = await services.createBooking(values, req.body, password, username)
+        let result =  await services.createBooking(values, req.body, password, username)
         res.send(responses.sendResponse(res,"Booking created succesfully",200,result))
 }
 
@@ -50,7 +50,6 @@ exports.viewAllBookings = async (req,res) => {
         let decoded = jwtDecode(req.body.token)
         let username = decoded.un
         let values = [username]
-        let result = await services.viewAllBookings(values)
+        let result =  await services.viewAllBookings(values)
         res.send(responses.sendResponse(res,"Viewing all bookings",200,result))
-
 }

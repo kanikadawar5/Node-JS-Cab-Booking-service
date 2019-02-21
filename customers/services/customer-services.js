@@ -2,12 +2,13 @@ var jwtDecode = require('jwt-decode')
 const constants = require('./../../constants/constants')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const {runQuery} = require('./../../databases/db-connection')
+const {runQuery} = require('../../databases/sql-connection')
 const promise=require('bluebird')
 
 exports.registerCustomer = promise.coroutine(function*(values,values1){
     let sql = 'INSERT INTO `users`(`username`, `password`, `user_type`, `first_name`, `last_name`, `phone_number`, `email`) VALUES (?,?,?,?,?,?,?)'
     const result = yield runQuery(sql,values)
+    console.log(result)
     return result
 })
 

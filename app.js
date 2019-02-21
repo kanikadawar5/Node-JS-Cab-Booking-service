@@ -1,9 +1,13 @@
 const express = require('express')
+const swaggerUi = require('swagger-ui-express')
+const swaggerDocument = require('./swagger.json')
 const app = express()
 const body_parser = require('body-parser')
 const port = process.env.PORT || 3001
 const http = require('http');
 const server = http.createServer(app)
+const dbo = require('./databases/mongo-connection.js')
+app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(swaggerDocument))
 
 server.listen(port, function () {
     var host = server.address().address

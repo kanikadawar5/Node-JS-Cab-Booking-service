@@ -1,16 +1,15 @@
 exports.sendResponse = (res,msg,status,data) => {
-    var response = {
+      res.status(status).json({
         message: msg,
         status : status,
         data   : data || {}
-      };
-      res.status(status).send(JSON.stringify(response))
+      })
 }
 
 exports.sendErrorResponse = (res,msg,status,data) => {
-  var response = {
-    message : msg,
+  res.status(status).json({
+    message: msg,
     status : status,
-    data: data || "Error occured"
-  }
+    data   : data || {}
+  })
 }
