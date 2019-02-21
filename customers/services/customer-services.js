@@ -7,6 +7,17 @@ const {
 } = require('../../databases/sql-connection')
 const promise = require('bluebird')
 
+exports.checkDuplicate = promise.coroutine(function*(values){
+        let sql = 'SELECT COUNT(*) FROM users WHERE username=?'
+        return yield runQuery(sql,values)
+})
+
+exports.inDB = promise.coroutine(function*(values){
+        let sql = 'SELECT * FROM users WHERE username = ?'
+        let values1 = [values.username]
+        return yield runQuery(sql,values1)
+})
+
 exports.registerCustomer = promise.coroutine(function*(values, values1) {
         let sql = 'INSERT INTO `users`(`username`, `password`, `user_type`, `first_name`, `last_name`, `phone_number`, `email`) VALUES (?,?,?,?,?,?,?)'
         const result = yield runQuery(sql, values)

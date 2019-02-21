@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken')
 const services = require('./../services/driver-services')
 
 exports.registerDriver = async (req, res) => {
+        // duplicate
         let hash = bcrypt.hashSync(req.body.password, constants.SALT_ROUNDS);
         let payload = {
                 un: req.body.username,
@@ -32,6 +33,7 @@ exports.registerDriver = async (req, res) => {
 }
 
 exports.loginDriver = async (req, res) => {
+        //in db or not
         const payload = {
                 un: req.body.username,
                 pw: req.body.password
@@ -45,6 +47,7 @@ exports.loginDriver = async (req, res) => {
 }
 
 exports.completeBooking = async (req, res) => {
+        //if exist,token
         let decoded = jwtDecode(req.body.token)
         let username = decoded.un
         let password = decoded.pw
@@ -58,6 +61,7 @@ exports.completeBooking = async (req, res) => {
 }
 
 exports.viewAllBookings = async (req, res) => {
+        //token
         let decoded = jwtDecode(req.body.token)
         let username = decoded.un
         let values = [username]
@@ -66,6 +70,7 @@ exports.viewAllBookings = async (req, res) => {
 }
 
 exports.viewAssignedBookings = async (req, res) => {
+        //token
         let decoded = jwtDecode(req.body.token)
         let username = decoded.un
         let values = [username]

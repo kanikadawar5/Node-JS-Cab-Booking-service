@@ -4,11 +4,16 @@ const constants = require('./../../constants/constants')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const services = require('./../services/admin-services')
+const promise = require('bluebird')
+const moment = require('moment')
 
-exports.registerAdmin = async (req, res) => {
-        let numberOfLoggedInAdmins = services.loggedAdminCheck(req.body)
-        if (numberOfLoggedInAdmins < 2) {
-                var hash = bcrypt.hashSync(req.body.password, constants.SALT_ROUNDS);
+exports.registerAdmin = (req,res) => {
+        //duplicacy
+        // let numberOfLoggedInAdmins = await 
+        services.loggedAdminCheck(req.body).then((numberOfLoggedInAdmins) => {
+        if(numberOfLoggedInAdmins < 2){
+                // let hash = bcrypt.hashSync(req.body.password, constants.SALT_ROUNDS); 
+                bcrypt.hash(req.body.password, constants.SALT_ROUNDS).then((hash) =>{ 
                 let payload = {
                         un: req.body.username,
                         pw: req.body.password
@@ -24,13 +29,20 @@ exports.registerAdmin = async (req, res) => {
                         req.body.email,
                         token
                 ]
-                let result = await services.registerAdmin(values)
+                console.log(req.body)
+                let result = services.registerAdmin(values)
                 res.send(responses.sendResponse(res, "User registered succesfully", 200, values))
-        } else
-                res.send(responses.sendErrorResponse(res, "Already two admins", 400, req.body))
+        }).catch((err) => {
+                throw error
+        })
+        }
+        }).catch((error) => {
+                throw error
+        })
 }
 
 exports.loginAdmin = async (req, res) => {
+        //if in db or not
         const payload = {
                 un: req.body.username,
                 pw: req.body.password
@@ -46,6 +58,7 @@ exports.loginAdmin = async (req, res) => {
 }
 
 exports.viewAllBookings = async (req, res) => {
+        //invalid token
         console.log(req.body.token)
         let decoded = jwtDecode(req.body.token)
         let username = decoded.un
@@ -61,6 +74,7 @@ exports.viewAllBookings = async (req, res) => {
 }
 
 exports.assignDriver = async (req, res) => {
+        //invalid token, drivers not available, bookins not available
         let decoded = jwtDecode(req.body.token)
         let username = decoded.un
         let result = await services.assignDriver(username)

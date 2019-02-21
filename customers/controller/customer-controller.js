@@ -4,8 +4,14 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const responses = require('./../../responses/responses')
 const services = require('./../services/customer-services')
+const promise = require('bluebird')
+const moment = require('moment')
 
-exports.registerCustomer = async (req, res) => {
+exports.registerCustomer = promise.coroutine(function*(req, res) {
+        let values = [req.body.username]
+        let result = yield services.checkDuplicate(values)
+        if (result[0].count != 0)
+                responses.sendErrorResponse(res, "You are already registered", 400, result)
         let hash = bcrypt.hashSync(req.body.password, constants.SALT_ROUNDS);
         let payload = {
                 un: req.body.username,
@@ -13,7 +19,7 @@ exports.registerCustomer = async (req, res) => {
         }
         let token = jwt.sign(payload, constants.KEY, constants.SIGNOPTIONS)
         console.log(token)
-        let values = [
+        let values1 = [
                 req.body.username,
                 hash,
                 "1",
@@ -22,40 +28,62 @@ exports.registerCustomer = async (req, res) => {
                 req.body.phone_number,
                 req.body.email
         ]
-        let values1 = [req.body.username]
-        let result = await services.registerCustomer(values)
-        if (result.affectedRows = 0)
-                res.send(responses.sendErrorResponse(res, "Send data correctly", 400, result))
-        else
-                res.send(responses.sendResponse(res, "Customer added succesfully", 200, values))
-}
-
-exports.loginCustomer = async (req, res) => {
-        const payload = {
-                un: req.body.username,
-                pw: req.body.password
+        try {
+                let result1 = yield services.registerCustomer(values1)
+                if (result1)
+                        responses.sendResponse(res, "Send data correctly", 200, result1)
+        } catch (error) {
+                responses.sendErrorResponse(res, "Could not send data", 400)
         }
-        let token = jwt.sign(payload, constants.KEY)
-        console.log(token)
-        let values = [req.body.username]
-        let result = await services.loginCustomer(values, req.body.password)
-        if (token)
-                res.send(responses.sendResponse(res, "User logged in succesfully", 200, result))
-}
 
-exports.createBooking = async (req, res) => {
-        let decoded = jwtDecode(req.body.token)
+})
+
+exports.loginCustomer = promise.coroutine(function*(req, res) {
+        try {
+                let inDB = yield services.inDB(req.body)
+                console.log(inDB)
+                if (inDB.length == 0)
+                        res.send(responses.sendResponse(res, "Register first", 400))
+                const payload = {
+                        un: req.body.username,
+                        pw: req.body.password
+                }
+                let token = jwt.sign(payload, constants.KEY)
+                console.log(token)
+                let values = [req.body.username]
+                let result = yield services.loginCustomer(values, req.body.password)
+                if (token)
+                        res.send(responses.sendResponse(res, "User logged in succesfully", 200, result))
+        } catch (error) {
+                res.send(responses.sendResponse(res, "Error logging in", 400))
+        }
+})
+
+exports.createBooking = promise.coroutine(function*(req, res) {
+        try {
+                let decoded = jwtDecode(req.body.token)
+        } catch (error) {
+                res.send(responses.sendResponse(res, "Invalid token", 400))
+        }
         let username = decoded.un
         let password = decoded.pw
         let values = [username]
-        let result = await services.createBooking(values, req.body, password, username)
-        res.send(responses.sendResponse(res, "Booking created succesfully", 200, result))
-}
+        try {
+                let result = yield services.createBooking(values, req.body, password, username)
+                res.send(responses.sendResponse(res, "Booking created succesfully", 200, result))
+        } catch (error) {
+                res.send(responses.sendResponse(res, "Invalid token", 400))
+        }
+})
 
-exports.viewAllBookings = async (req, res) => {
-        let decoded = jwtDecode(req.body.token)
+exports.viewAllBookings = promise.coroutine(function*(req, res) {
+        try {
+                let decoded = yield jwtDecode(req.body.token)
+        } catch (error) {
+                res.send(responses.sendResponse(res, "Invalid token", 400))
+        }
         let username = decoded.un
         let values = [username]
-        let result = await services.viewAllBookings(values)
-        res.send(responses.sendResponse(res, "Viewing all bookings", 200, result))
-}
+        let result = yield services.viewAllBookings(values)
+        res.send(responses.sendResponse(res, "Viewing all bookings", 200, req.body))
+})

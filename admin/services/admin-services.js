@@ -8,22 +8,23 @@ const {
 const promise = require('bluebird')
 const moment = require('moment')
 
-exports.loggedAdminCheck = async () => {
-        let values = "admin"
-        return promise.coroutine(function*() {
-                let sql = '(SELECT COUNT(*) AS count FROM `users` WHERE `user_type` = ?)'
+exports.checkDuplicate = promise.coroutine(function*(username){
+        let sql = 'SELECT COUNT(*) AS count FROM users WHERE username = ?'
+        return yield runQuery(sql,username)
+})
+
+exports.loggedAdminCheck = promise.coroutine(function*(admin) {
+        let values = admin.username
+        let sql = '(SELECT COUNT(*) AS count FROM `users` WHERE `user_type` = ?)'
                 const result = yield runQuery(sql, values)
                 return result[0].count
-        })();
-}
+})
 
-exports.registerAdmin = async (values) => {
-        return promise.coroutine(function*() {
+exports.registerAdmin = promise.coroutine(function*(values) {
                 let sql = 'INSERT INTO `users`(`username`, `password`, `user_type`, `first_name`, `last_name`, `phone_number`, `email`) VALUES (?,?,?,?,?,?,?)'
                 const result = yield runQuery(sql, values)
                 return result
-        })();
-}
+        })
 
 exports.loginAdmin = (values1, password) => {
         return promise.coroutine(function*() {
