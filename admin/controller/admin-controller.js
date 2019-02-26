@@ -11,14 +11,15 @@ exports.registerAdmin = promise.coroutine(function*(req, res) {
         try {
                 let values = [req.body.username]
                 let result = yield services.checkDuplicate(values)
-                numberOfLoggedInAdmins = services.loggedAdminCheck(req.body)
-                if (numberOfLoggedInAdmins < 2) {
-                        let hash = bcrypt.hash(req.body.password, constants.SALT_ROUNDS)
+                numberOfLoggedInAdmins = yield services.loggedAdminCheck(req.body)
+                if (numberOfLoggedInAdmins < 2 && result[0].count<1) {
+                        let hash = yield bcrypt.hash(req.body.password, constants.SALT_ROUNDS)
                         let payload = {
                                 un: req.body.username,
                                 pw: req.body.password
                         }
                         let token = jwt.sign(payload, constants.KEY, constants.SIGNOPTIONS)
+                        console.log(hash)
                         let values = [
                                 req.body.username,
                                 hash,
@@ -26,12 +27,10 @@ exports.registerAdmin = promise.coroutine(function*(req, res) {
                                 req.body.first_name,
                                 req.body.last_name,
                                 req.body.phone_number,
-                                req.body.email,
-                                token
+                                req.body.email
                         ]
-                        console.log(req.body)
-                        let result = services.registerAdmin(values)
-                        res.send(responses.sendResponse(res, "User registered succesfully", 200, values))
+                        let result1 = yield services.registerAdmin(values)
+                responses.sendResponse(res, "User registered succesfully", 200, values)
                 }
         } catch (error) {
                 responses.sendErrorResponse(res, "Could not send data", 400)

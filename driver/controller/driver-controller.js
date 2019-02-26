@@ -5,7 +5,6 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const services = require('./../services/driver-services')
 const promise = require('bluebird')
-const moment = require('moment')
 
 exports.registerDriver = promise.coroutine(function*(req, res) {
         try {

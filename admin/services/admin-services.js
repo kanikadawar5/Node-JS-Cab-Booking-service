@@ -19,7 +19,7 @@ exports.checkBookings = promise.coroutine(function*(values){
 })
 
 exports.checkDuplicate = promise.coroutine(function*(values){
-        let sql = 'SELECT COUNT(*) FROM users WHERE username=?'
+        let sql = 'SELECT COUNT(*) AS count FROM users WHERE username=?'
         return yield runQuery(sql,values)
 })
 
@@ -37,22 +37,21 @@ exports.loggedAdminCheck = promise.coroutine(function*(admin) {
 })
 
 exports.registerAdmin = promise.coroutine(function*(values) {
+                console.log("reg")
                 let sql = 'INSERT INTO `users`(`username`, `password`, `user_type`, `first_name`, `last_name`, `phone_number`, `email`) VALUES (?,?,?,?,?,?,?)'
                 const result = yield runQuery(sql, values)
+                console.log(result)
                 return result
         })
 
-exports.loginAdmin = (values1, password) => {
-        return promise.coroutine(function*() {
+exports.loginAdmin = promise.coroutine(function*(values1, password) {
                 let sql1 = 'SELECT * FROM `users` WHERE username = ?'
                 const adminDb = yield runQuery(sql1, values1)
                 const match = yield bcrypt.compare(password, adminDb[0].password)
                 if (match) return adminDb
-        })();
-}
+})
 
-exports.viewAllBookings = async (values, username) => {
-        return promise.coroutine(function*() {
+exports.viewAllBookings = promise.coroutine(function*(values, username) {
                 let sql = 'SELECT COUNT(*) AS count FROM `users` WHERE `user_type` = ? AND username = ?'
                 const result = yield runQuery(sql, values)
                 if (result[0].count == 1) {
@@ -60,11 +59,9 @@ exports.viewAllBookings = async (values, username) => {
                         const bookings = yield runQuery(sql1)
                         return bookings
                 }
-        })();
-}
+})
 
-exports.assignDriver = async (username) => {
-        return promise.coroutine(function*() {
+exports.assignDriver = promise.coroutine(function*(username) {
                 let sql = 'SELECT * FROM bookings WHERE booking_status = 0'
                 let bookings = yield runQuery(sql)
                 for (let i = 0; i < bookings.length; i++) {
@@ -85,5 +82,4 @@ exports.assignDriver = async (username) => {
                         logs: result3
                 });
                 return result2
-        })();
-}
+})

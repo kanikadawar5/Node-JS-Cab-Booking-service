@@ -5,7 +5,7 @@
         "description": "Assignment 3",
         "title": "assignment 3"
     },
-    "host": "localhost:3001",
+    "host": "localhost:3002",
     "basePath": "/",
     "schemes": [
         "http"
@@ -42,7 +42,7 @@
                         "in": "formData"
                     },
                     {
-                        "type": "string",
+                        "type": "number",
                         "description": "phone_number",
                         "name": "phone_number",
                         "in": "formData"
@@ -56,7 +56,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "successfully registered"
+                        "description": "Successfully registered"
                     },
                     "400": {
                         "description": "Error in registering"
@@ -169,7 +169,7 @@
                         "in": "formData"
                     },
                     {
-                        "type": "string",
+                        "type": "number",
                         "description": "phone_number",
                         "name": "phone_number",
                         "in": "formData"
