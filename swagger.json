@@ -102,7 +102,7 @@
                     "type": "string",
                     "description": "token",
                     "name": "token",
-                    "in": "header"
+                    "in": "formData"
                 }
             ],
                 "responses": {

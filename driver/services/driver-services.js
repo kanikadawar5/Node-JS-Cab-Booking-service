@@ -9,7 +9,7 @@ const promise = require('bluebird')
 const moment = require('moment')
 
 exports.checkDuplicate = promise.coroutine(function*(values){
-        let sql = 'SELECT COUNT(*) FROM users WHERE username=?'
+        let sql = 'SELECT COUNT(*) AS count FROM users WHERE username=?'
         return yield runQuery(sql,values)
 })
 

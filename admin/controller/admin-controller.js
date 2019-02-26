@@ -19,7 +19,6 @@ exports.registerAdmin = promise.coroutine(function*(req, res) {
                                 pw: req.body.password
                         }
                         let token = jwt.sign(payload, constants.KEY, constants.SIGNOPTIONS)
-                        console.log(hash)
                         let values = [
                                 req.body.username,
                                 hash,
@@ -31,6 +30,9 @@ exports.registerAdmin = promise.coroutine(function*(req, res) {
                         ]
                         let result1 = yield services.registerAdmin(values)
                 responses.sendResponse(res, "User registered succesfully", 200, values)
+                }
+                else{
+                        responses.sendErrorResponse(res, "Only two unique admins can be entered")
                 }
         } catch (error) {
                 responses.sendErrorResponse(res, "Could not send data", 400)
@@ -61,9 +63,9 @@ exports.loginAdmin = promise.coroutine(function*(req, res) {
 
 exports.viewAllBookings = promise.coroutine(function*(req, res) {
         try {
-                let decoded = yield jwtDecode(req.body.token)
+                let decoded = jwtDecode(req.body.token)
         } catch (error) {
-                res.send(responses.sendResponse(res, "Invalid token", 400))
+                responses.sendResponse(res, "Invalid token", 400)
         }
         console.log(req.body.token)
         let decoded = jwtDecode(req.body.token)
@@ -82,17 +84,17 @@ exports.viewAllBookings = promise.coroutine(function*(req, res) {
 
 exports.assignDriver = promise.coroutine(function*(req, res) {
         try {
-                let decoded = yield jwtDecode(req.body.token)
+                let decoded = jwtDecode(req.body.token)
                 let checkDrivers = yield services.checkDrivers(decoded.un)
                 let checkBookings = yield services.checkBookings(decoded.un)
-                if (checkBookings > 0 && checkDrivers > 0) {
+                if (checkBookings[0].count > 0 && checkDrivers[0].count > 0) {
                         let decoded = jwtDecode(req.body.token)
                         let username = decoded.un
                         let result = yield services.assignDriver(username)
                         if (result)
                                 res.send(responses.sendResponse(res, "Driver assigned", 200, result))
                 } else {
-                        res.send(responses.sendResponse(res, "All assigned", 400))
+                        res.send(responses.sendResponse(res, "All assigned already", 400))
                 }
         } catch (error) {
                 res.send(responses.sendResponse(res, "Only admins can assign", 400))

@@ -8,7 +8,7 @@ const promise = require('bluebird')
 
 exports.registerDriver = promise.coroutine(function*(req, res) {
         try {
-                let result1 = yield services.checkDuplicate(values)
+                let result1 = yield services.checkDuplicate(req.body.username)
                 if (result1[0].count != 0)
                         responses.sendErrorResponse(res, "You are already registered", 400)
                 let hash = bcrypt.hashSync(req.body.password, constants.SALT_ROUNDS);
@@ -41,7 +41,6 @@ exports.registerDriver = promise.coroutine(function*(req, res) {
 exports.loginDriver = promise.coroutine(function*(req, res) {
         try {
                 let inDB = yield services.inDB(req.body)
-                console.log(inDB)
                 if (inDB.length == 0)
                         res.send(responses.sendResponse(res, "Register first", 400))
                 const payload = {
@@ -66,6 +65,7 @@ exports.completeBooking = promise.coroutine(function*(req, res) {
                 } catch (error) {
                         res.send(responses.sendResponse(res, "Invalid token", 400))
                 }
+                let decoded = jwtDecode(req.body.token)
                 let username = decoded.un
                 let password = decoded.pw
                 let booking_id = req.body.booking_id

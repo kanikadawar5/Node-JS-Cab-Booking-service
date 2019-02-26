@@ -62,6 +62,7 @@ exports.createBooking = promise.coroutine(function*(req, res) {
         } catch (error) {
                 res.send(responses.sendResponse(res, "Invalid token", 400))
         }
+        let decoded = jwtDecode(req.body.token)
         let username = decoded.un
         let password = decoded.pw
         let values = [username]
@@ -75,12 +76,13 @@ exports.createBooking = promise.coroutine(function*(req, res) {
 
 exports.viewAllBookings = promise.coroutine(function*(req, res) {
         try {
-                let decoded = yield jwtDecode(req.body.token)
+                let decoded = jwtDecode(req.body.token)
         } catch (error) {
                 res.send(responses.sendResponse(res, "Invalid token", 400))
         }
+        let decoded = jwtDecode(req.body.token)
         let username = decoded.un
         let values = [username]
         let result = yield services.viewAllBookings(values)
-        res.send(responses.sendResponse(res, "Viewing all bookings", 200, req.body))
+        res.send(responses.sendResponse(res, "Viewing all bookings", 200, result))
 })

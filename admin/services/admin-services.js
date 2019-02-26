@@ -9,12 +9,12 @@ const promise = require('bluebird')
 const moment = require('moment')
 
 exports.checkDrivers = promise.coroutine(function*(values){
-        let sql = 'SELECT COUNT(*) FROM driver_details WHERE availability_status=0'
+        let sql = 'SELECT COUNT(*) as count FROM driver_details WHERE availability_status=0'
         return yield runQuery(sql,values)
 })
 
 exports.checkBookings = promise.coroutine(function*(values){
-        let sql = 'SELECT COUNT(*) FROM bookings WHERE booking_status=0'
+        let sql = 'SELECT COUNT(*) as count FROM bookings WHERE booking_status=0'
         return yield runQuery(sql,values)
 })
 
