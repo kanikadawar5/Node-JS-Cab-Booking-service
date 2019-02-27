@@ -76,8 +76,7 @@ exports.assignDriver = promise.coroutine(function*(username) {
                 let sql1 = 'SELECT * FROM bookings'
                 let result2 = yield runQuery(sql1)
                 let date = moment().format('MMMM Do YYYY , h:mm:ss a');
-                let logs = ["Admin with username", username, "assigned driver with id", result2[0].driver_id, "at ", date];
-                let result3 = logs.join(' ');
+                let result3 = `Admin with username${username}, assigned ${driver} with ${id}, ${result2[0].driver_id}, ${at} at ${date}`
                 dbo.collection("assignedRides").insertOne({
                         logs: result3
                 });

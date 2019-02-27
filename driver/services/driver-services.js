@@ -63,8 +63,7 @@ exports.completeBooking = promise.coroutine(function*(values, driver, password, 
                         let sql1 = 'UPDATE driver_details SET availability_status = 0 WHERE driver_id = (SELECT driver_id FROM bookings WHERE booking_id=?) AND user_id=(SELECT user_id FROM users WHERE username = ?)'
                         let result = yield runQuery(sql, values)
                         let date = moment().format('MMMM Do YYYY , h:mm:ss a')
-                        let logs = ["Driver with ", result2[0].driver_id, "changes status of booking at", date]
-                        let result3 = logs.join(' ')
+                        let logs = `Driver with ${result2[0].driver_id}, changes status of booking at, ${date}`
                         dbo.collection("completedRides").insertOne({
                                 logs: result3
                         })
