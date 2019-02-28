@@ -8,20 +8,42 @@ const {
 const promise = require('bluebird')
 const moment = require('moment')
 
-exports.checkDrivers = promise.coroutine(function*(values){
+/**
+ * @function <b>checkDrivers</b><br>
+ * Returns the count of drivers who have availability status as available
+ */
+
+exports.checkDrivers = promise.coroutine(function*(){
         let sql = 'SELECT COUNT(*) as count FROM driver_details WHERE availability_status=0'
         return yield sqlQuery(sql,values)
 })
 
-exports.checkBookings = promise.coroutine(function*(values){
+/**
+ * @function <b>checkBookings</b><br>
+ * Returns if any unassigned bookings are there
+ */
+
+exports.checkBookings = promise.coroutine(function*(){
         let sql = 'SELECT COUNT(*) as count FROM bookings WHERE booking_status=0'
         return yield sqlQuery(sql,values)
 })
+
+/**
+ * @function <b>checkDuplicate</b><br>
+ * Returns if any user with the same username exists
+ * @param {string(username)}
+ */
 
 exports.checkDuplicate = promise.coroutine(function*(values){
         let sql = 'SELECT COUNT(*) AS count FROM users WHERE username=?'
         return yield sqlQuery(sql,values)
 })
+
+/**
+ * @function <b>inDB</b><br>
+ * Checks if the username already exists in the database
+ * @param {string(username)}
+ */
 
 exports.inDB = promise.coroutine(function*(values){
         let sql = 'SELECT * FROM users WHERE username = ?'
@@ -29,12 +51,23 @@ exports.inDB = promise.coroutine(function*(values){
         return yield sqlQuery(sql,values1)
 })
 
+/**
+ * @function <b>loggedAdminCheck</b><br>
+ * Returns the number of admins who are already in the database
+ * @param {array(username)}
+ */
+
 exports.loggedAdminCheck = promise.coroutine(function*(admin) {
         let values = admin.username
         let sql = '(SELECT COUNT(*) AS count FROM `users` WHERE `user_type` = ?)'
                 const result = yield sqlQuery(sql, values)
                 return result[0].count
 })
+
+/**
+ * @function <b>registetDrivers</b><br>
+ * @param {array(username, hash, userCode, first_name, last_name, phone_number, email)}
+ */
 
 exports.registerAdmin = promise.coroutine(function*(values) {
                 console.log("reg")
@@ -44,12 +77,24 @@ exports.registerAdmin = promise.coroutine(function*(values) {
                 return result
         })
 
+/**
+ * @function <b>loginAdmin</b><br>
+ * @param {string(username)}
+ * @param {string(password)}
+ */
+
 exports.loginAdmin = promise.coroutine(function*(values1, password) {
                 let sql1 = 'SELECT * FROM `users` WHERE username = ?'
                 const adminDb = yield sqlQuery(sql1, values1)
                 const match = yield bcrypt.compare(password, adminDb[0].password)
                 if (match) return adminDb
 })
+
+/**
+ * @function <b>viewAllBookings</b><br>
+ * @param {array(usertype,username)}
+ * @param {string(username)}
+ */
 
 exports.viewAllBookings = promise.coroutine(function*(values, username) {
                 let sql = 'SELECT COUNT(*) AS count FROM `users` WHERE `user_type` = ? AND username = ?'
@@ -60,6 +105,12 @@ exports.viewAllBookings = promise.coroutine(function*(values, username) {
                         return bookings
                 }
 })
+
+/**
+ * @function <b>assignDriver</b><br>
+ * Assigns drivers automatically
+ * @param {string(username)}
+ */
 
 const assignDriver = promise.coroutine(function*(username) {
                 let sql = 'SELECT * FROM bookings WHERE booking_status = 0'
@@ -82,5 +133,3 @@ const assignDriver = promise.coroutine(function*(username) {
                 });
                 return result2
 })
-
-module.exports = { assignDriver}

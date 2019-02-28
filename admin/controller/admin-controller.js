@@ -87,7 +87,7 @@ exports.viewAllBookings = promise.coroutine(function*(req, res) {
         try {
                 let decoded = jwtDecode(req.body.token)
         } catch (error) {
-                responses.sendResponse(res, "Invalid token", 400)
+                res.send(responses.sendResponse(res, "Invalid token", 400))
         }
         console.log(req.body.token)
         let decoded = jwtDecode(req.body.token)
@@ -112,9 +112,13 @@ exports.viewAllBookings = promise.coroutine(function*(req, res) {
 
 exports.assignDriver = promise.coroutine(function*(req, res) {
         try {
-                let decoded = jwtDecode(req.body.token)
-                let checkDrivers = yield services.checkDrivers(decoded.un)
-                let checkBookings = yield services.checkBookings(decoded.un)
+                try {
+                        let decoded = jwtDecode(req.body.token)
+                } catch (error) {
+                        res.send(responses.sendResponse(res, "Invalid token", 400))
+                }
+                let checkDrivers = yield services.checkDrivers()
+                let checkBookings = yield services.checkBookings()
                 if (checkBookings[0].count > 0 && checkDrivers[0].count > 0) {
                         let decoded = jwtDecode(req.body.token)
                         let username = decoded.un

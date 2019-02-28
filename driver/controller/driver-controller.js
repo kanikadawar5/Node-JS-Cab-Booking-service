@@ -92,7 +92,7 @@ exports.completeBooking = promise.coroutine(function*(req, res) {
                 let password = decoded.pw
                 let booking_id = req.body.booking_id
                 let values = [booking_id, username]
-                let result = yield services.completeBooking(values, req.body, password, username)
+                let result = yield services.completeBooking(values, username)
                 res.send(responses.sendResponse(res, "Booking completed succesfully", 200, result))
         } catch (error) {
                 res.send(responses.sendResponse(res, "Unable to process the query", 400))
@@ -128,7 +128,7 @@ exports.viewAssignedBookings = promise.coroutine(function*(req, res) {
                 let decoded = jwtDecode(req.body.token)
                 let username = decoded.un
                 let values = [username]
-                let result = yield services.viewAssigneMONGOokings(values)
+                let result = yield services.viewAssignedBookings(values)
                 res.send(responses.sendResponse(res, "Viewing assigning bookings", 200, result))
         } catch (error) {
                 res.send(responses.sendResponse(res, "Invalid token ", 400))

@@ -7,16 +7,32 @@ const {
 } = require('../../databases/sql-connection')
 const promise = require('bluebird')
 
+/**
+ * @function <b>checkDuplicate</b><br>
+ * Checks if driver with the same username exists already in the database
+ */
+
 exports.checkDuplicate = promise.coroutine(function*(values){
         let sql = 'SELECT COUNT(*) FROM users WHERE username=?'
         return yield sqlQuery(sql,values)
 })
+
+/**
+ * @function <b>inDB</b><br>
+ * Checks if the username already exists in the database
+ * @param {string(username)}
+ */
 
 exports.inDB = promise.coroutine(function*(values){
         let sql = 'SELECT * FROM users WHERE username = ?'
         let values1 = [values.username]
         return yield sqlQuery(sql,values1)
 })
+
+/**
+ * @function <b>registerCustomer</b><br>
+ * @param {array(username, hash, userCode, first_name, last_name, phone_number, email)}
+ */
 
 exports.registerCustomer = promise.coroutine(function*(values, values1) {
         let sql = 'INSERT INTO `users`(`username`, `password`, `user_type`, `first_name`, `last_name`, `phone_number`, `email`) VALUES (?,?,?,?,?,?,?)'
@@ -25,6 +41,12 @@ exports.registerCustomer = promise.coroutine(function*(values, values1) {
         return result
 })
 
+/**
+ * @function <b>loginCustomer</b><br>
+ * @param {string(username)}
+ * @param {string(password)}
+ */
+
 exports.loginCustomer = promise.coroutine(function*(values, password) {
         let sql = 'SELECT * FROM users WHERE username = ?'
         const customer = yield sqlQuery(sql, values)
@@ -32,6 +54,14 @@ exports.loginCustomer = promise.coroutine(function*(values, password) {
         if (match)
                 return customer
 })
+
+/**
+ * @function <b>createBooking</b><br>
+ * @param {array(username)}
+ * @param {string(customer)}
+ * @param {string(password)}
+ * @param {string(username)}
+ */
 
 exports.createBooking = promise.coroutine(function*(values, customer, password, username) {
         let sql = '(SELECT * FROM `users` WHERE `username` = ?)'
@@ -55,6 +85,11 @@ exports.createBooking = promise.coroutine(function*(values, customer, password, 
                         return bookings
         }
 })
+
+/**
+ * @function <b>viewAllBookings</b><br>
+ * @param {string(username)}
+ */
 
 exports.viewAllBookings = promise.coroutine(function*(values) {
         let sql = 'SELECT * FROM bookings WHERE user_id = (SELECT user_id FROM users WHERE username = ?)'
