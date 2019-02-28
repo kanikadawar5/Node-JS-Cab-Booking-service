@@ -8,6 +8,16 @@ const promise = require('bluebird')
 const moment = require('moment')
 const jwtBlacklist = require('jwt-blacklist')(jwt)
 
+/**
+ * @function <b>registerCustomer</b><br>
+ * @param {string(username)}
+ * @param {alphanumeric(password)}
+ * @param {string(first_name)}
+ * @param {string(last_name)}
+ * @param {number(phone_number)}
+ * @param {string(email)}
+ */
+
 exports.registerCustomer = promise.coroutine(function*(req, res) {
         let values = [req.body.username]
         let result = yield services.checkDuplicate(values)
@@ -37,6 +47,12 @@ exports.registerCustomer = promise.coroutine(function*(req, res) {
 
 })
 
+/**
+ * @function <b>loginCustomer</b><br>
+ * @param {string(username)}
+ * @param {alphanumeric(password)}
+ */
+
 exports.loginCustomer = promise.coroutine(function*(req, res) {
         try {
                 let inDB = yield services.inDB(req.body)
@@ -57,15 +73,11 @@ exports.loginCustomer = promise.coroutine(function*(req, res) {
         }
 })
 
-// exports.logoutCustomer = promise.coroutine(function*(req,res){
-//         try{
-//                 jwtBlacklist.blacklist(req.body.token)
-//                 res.send(responses.sendResponse(res, "Logged out successfully",200))
-//         }
-//         catch (error){
-//                 res.send(responses.sendResponse(res, "Error logging out",400))
-//         }
-// })
+/**
+ * @function <b>createBooking</b><br>
+ * Creates bookings for the logged in customer
+ * @param {string(token)}
+ */
 
 exports.createBooking = promise.coroutine(function*(req, res) {
         try {
@@ -84,6 +96,12 @@ exports.createBooking = promise.coroutine(function*(req, res) {
                 res.send(responses.sendResponse(res, "Invalid token", 400))
         }
 })
+
+/**
+ * @function <b>viewAllBookings</b><br>
+ * Views all bookings for the logged in customer
+ * @param {string(token)}
+ */
 
 exports.viewAllBookings = promise.coroutine(function*(req, res) {
         try {

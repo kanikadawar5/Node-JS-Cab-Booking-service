@@ -6,6 +6,16 @@ const jwt = require('jsonwebtoken')
 const services = require('./../services/driver-services')
 const promise = require('bluebird')
 
+/**
+ * @function <b>registerDriver</b><br>
+ * @param {string(username)}
+ * @param {alphanumeric(password)}
+ * @param {string(first_name)}
+ * @param {string(last_name)}
+ * @param {number(phone_number)}
+ * @param {string(email)}
+ */
+
 exports.registerDriver = promise.coroutine(function*(req, res) {
         try {
                 let result1 = yield services.checkDuplicate(req.body.username)
@@ -38,6 +48,12 @@ exports.registerDriver = promise.coroutine(function*(req, res) {
         }
 })
 
+/**
+ * @function <b>loginDriver</b><br>
+ * @param {string(username)}
+ * @param {alphanumeric(password)}
+ */
+
 exports.loginDriver = promise.coroutine(function*(req, res) {
         try {
                 let inDB = yield services.inDB(req.body)
@@ -58,6 +74,12 @@ exports.loginDriver = promise.coroutine(function*(req, res) {
         }
 })
 
+/**
+ * @function <b>completeBooking</b><br>
+ * Completes bookings for the logged in driver
+ * @param {string(token)}
+ */
+
 exports.completeBooking = promise.coroutine(function*(req, res) {
         try {
                 try {
@@ -77,6 +99,12 @@ exports.completeBooking = promise.coroutine(function*(req, res) {
         }
 })
 
+/**
+ * @function <b>viewAllBookings</b><br>
+ * Creates all bookings for the logged in driver
+ * @param {string(token)}
+ */
+
 exports.viewAllBookings = promise.coroutine(function*(req, res) {
         try {
                 let decoded = jwtDecode(req.body.token)
@@ -89,7 +117,13 @@ exports.viewAllBookings = promise.coroutine(function*(req, res) {
         }
 })
 
-exports.viewAssigneMONGOokings = promise.coroutine(function*(req, res) {
+/**
+ * @function <b>viewAssignedBookings</b><br>
+ * Creates all the bookings assigned to the logged in customer
+ * @param {string(token)}
+ */
+
+exports.viewAssignedBookings = promise.coroutine(function*(req, res) {
         try {
                 let decoded = jwtDecode(req.body.token)
                 let username = decoded.un

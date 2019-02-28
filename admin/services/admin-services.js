@@ -61,7 +61,7 @@ exports.viewAllBookings = promise.coroutine(function*(values, username) {
                 }
 })
 
-exports.assignDriver = promise.coroutine(function*(username) {
+const assignDriver = promise.coroutine(function*(username) {
                 let sql = 'SELECT * FROM bookings WHERE booking_status = 0'
                 let bookings = yield sqlQuery(sql)
                 for (let i = 0; i < bookings.length; i++) {
@@ -82,3 +82,5 @@ exports.assignDriver = promise.coroutine(function*(username) {
                 });
                 return result2
 })
+
+module.exports = { assignDriver}

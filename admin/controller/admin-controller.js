@@ -7,6 +7,16 @@ const services = require('./../services/admin-services')
 const promise = require('bluebird')
 const moment = require('moment')
 
+/**
+ * @function <b>registerAdmin</b><br>
+ * @param {string(username)}
+ * @param {alphanumeric(password)}
+ * @param {string(first_name)}
+ * @param {string(last_name)}
+ * @param {number(phone_number)}
+ * @param {string(email)}
+ */
+
 exports.registerAdmin = promise.coroutine(function*(req, res) {
         try {
                 let values = [req.body.username]
@@ -39,6 +49,12 @@ exports.registerAdmin = promise.coroutine(function*(req, res) {
         }
 })
 
+/**
+ * @function <b>loginAdmin</b><br>
+ * @param {string(username)}
+ * @param {alphanumeric(password)}
+ */
+
 exports.loginAdmin = promise.coroutine(function*(req, res) {
         try {
                 let inDB = yield services.inDB(req.body)
@@ -61,6 +77,12 @@ exports.loginAdmin = promise.coroutine(function*(req, res) {
         }
 })
 
+/**
+ * @function <b>viewAllBookings</b><br>
+ * Views all the assigned, pending/ unassigned and ongoing bookings
+ * @param {string(token)}
+ */
+
 exports.viewAllBookings = promise.coroutine(function*(req, res) {
         try {
                 let decoded = jwtDecode(req.body.token)
@@ -81,6 +103,12 @@ exports.viewAllBookings = promise.coroutine(function*(req, res) {
                 res.send(responses.sendErrorResponse(res, "Unable to process the query", 400))
         }
 })
+
+/**
+ * @function <b>assignDriver</b><br>
+ * Automatically assigns all the available drivers to the pending/ unassigned bookings
+ * @param {string(token)}
+ */
 
 exports.assignDriver = promise.coroutine(function*(req, res) {
         try {

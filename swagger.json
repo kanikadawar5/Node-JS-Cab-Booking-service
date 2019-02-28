@@ -5,7 +5,7 @@
         "description": "Assignment 3",
         "title": "assignment 3"
     },
-    "host": "localhost:3032",
+    "host": "localhost:3002",
     "basePath": "/",
     "schemes": [
         "http"
@@ -216,29 +216,6 @@
                     },
                     "400": {
                         "description": "Error in logging customer"
-                    }
-                }
-            }
-        },
-        "/customer/logout": {
-            "post": {
-                "tags": [
-                    "customer"
-                ],
-                "description": "Customer logout",
-                "parameters": [{
-                    "type": "string",
-                    "description": "token",
-                    "name": "token",
-                    "in": "formData"
-                }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successfully logged out"
-                    },
-                    "400": {
-                        "description": "Error in logging out"
                     }
                 }
             }

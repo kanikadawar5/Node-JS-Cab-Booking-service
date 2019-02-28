@@ -8,6 +8,5 @@ var connection = mysql.createConnection({
     database : 'Assignment3'  // Your database name
 });
 
-
 const sqlQuery=util.promisify(connection.query).bind(connection)
 module.exports = {sqlQuery}
