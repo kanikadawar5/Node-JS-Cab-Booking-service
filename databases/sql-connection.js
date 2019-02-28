@@ -9,5 +9,5 @@ var connection = mysql.createConnection({
 });
 
 
-const runQuery=util.promisify(connection.query).bind(connection)
-module.exports = {runQuery}
+const sqlQuery=util.promisify(connection.query).bind(connection)
+module.exports = {sqlQuery}

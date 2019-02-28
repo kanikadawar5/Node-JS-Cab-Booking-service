@@ -8,5 +8,5 @@ MongoClient.connect(url, {useNewUrlParser:true},(err,db) => {
         console.log(err)
     }
     else
-    global.dbo = db.db("Assignment")
+    global.MONGO = db.db("Assignment")
 })

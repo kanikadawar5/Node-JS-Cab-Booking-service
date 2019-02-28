@@ -12,6 +12,7 @@
     "bcrypt": "^3.0.4",
     "bluebird": "^3.5.3",
     "jsonwebtoken": "^8.4.0",
+    "jwt-blacklist": "0.0.2",
     "jwt-decode": "^2.2.0",
     "moment": "^2.24.0",
     "mongodb": "^3.1.13",

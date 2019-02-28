@@ -6,6 +6,7 @@ const responses = require('./../../responses/responses')
 const services = require('./../services/customer-services')
 const promise = require('bluebird')
 const moment = require('moment')
+const jwtBlacklist = require('jwt-blacklist')(jwt)
 
 exports.registerCustomer = promise.coroutine(function*(req, res) {
         let values = [req.body.username]
@@ -55,6 +56,16 @@ exports.loginCustomer = promise.coroutine(function*(req, res) {
                 res.send(responses.sendResponse(res, "Error logging in", 400))
         }
 })
+
+// exports.logoutCustomer = promise.coroutine(function*(req,res){
+//         try{
+//                 jwtBlacklist.blacklist(req.body.token)
+//                 res.send(responses.sendResponse(res, "Logged out successfully",200))
+//         }
+//         catch (error){
+//                 res.send(responses.sendResponse(res, "Error logging out",400))
+//         }
+// })
 
 exports.createBooking = promise.coroutine(function*(req, res) {
         try {

@@ -7,6 +7,6 @@ router.post('/register',validator.validateDriver,controller.registerDriver)
 router.post('/login',validator.validateDriver,controller.loginDriver)
 router.post('/viewAllBookings',controller.viewAllBookings)
 router.post('/completeBooking',controller.completeBooking)
-router.post('/viewAssignedBookings',controller.viewAssignedBookings)
+router.post('/viewAssigneMONGOokings',controller.viewAssigneMONGOokings)
 
 module.exports = router

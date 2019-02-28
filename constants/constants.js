@@ -3,5 +3,5 @@ exports.SALT_ROUNDS = 10
 exports.userName = 'ADMIN'
 exports.password = 'ADMIN'
 exports.SIGNOPTIONS = {
-    expiresIn : "1h"
+    expiresDuration : "1"
 }

@@ -89,12 +89,12 @@ exports.viewAllBookings = promise.coroutine(function*(req, res) {
         }
 })
 
-exports.viewAssignedBookings = promise.coroutine(function*(req, res) {
+exports.viewAssigneMONGOokings = promise.coroutine(function*(req, res) {
         try {
                 let decoded = jwtDecode(req.body.token)
                 let username = decoded.un
                 let values = [username]
-                let result = yield services.viewAssignedBookings(values)
+                let result = yield services.viewAssigneMONGOokings(values)
                 res.send(responses.sendResponse(res, "Viewing assigning bookings", 200, result))
         } catch (error) {
                 res.send(responses.sendResponse(res, "Invalid token ", 400))
