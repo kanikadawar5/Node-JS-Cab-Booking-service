@@ -133,3 +133,25 @@ exports.viewAllBookings = promise.coroutine(function*(values) {
         let result = yield sqlQuery(sql, values)
         return result
 })
+
+/**
+ * @function <b>logoutDriver</b><br>
+ * @param {string(token)}
+ */
+
+exports.logoutDriver = promise.coroutine(function*(token){
+        let sql = 'INSERT INTO `expired_tokens`(`token`) VALUES (?)'
+        let result = yield sqlQuery(sql,token)
+        return result
+})
+
+/**
+ * @function <b>checkIfLoggedOut</b><br>
+ * @param {string(token)}
+ */
+
+ exports.checkIfLoggedOut = promise.coroutine(function*(token) {
+         let sql = 'SELECT COUNT(*) AS count FROM `expired_tokens` WHERE `token`=?'
+         let result = yield sqlQuery(sql,token)
+         return result
+ })

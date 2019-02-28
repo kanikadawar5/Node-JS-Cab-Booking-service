@@ -90,12 +90,15 @@ exports.completeBooking = promise.coroutine(function*(req, res) {
                 let decoded = jwtDecode(req.body.token)
                 let username = decoded.un
                 let password = decoded.pw
+                let checkIfLoggedOut = yield services.checkIfLoggedOut(req.body.token)
+                if(checkIfLoggedOut[0].count>0)
+                res.send(responses.sendErrorResponse(res, "Logged out",400))
                 let booking_id = req.body.booking_id
                 let values = [booking_id, username]
                 let result = yield services.completeBooking(values, username)
                 res.send(responses.sendResponse(res, "Booking completed succesfully", 200, result))
         } catch (error) {
-                res.send(responses.sendResponse(res, "Unable to process the query", 400))
+                res.send(responses.sendErrorResponse(res, "Unable to process the query", 400))
         }
 })
 
@@ -110,6 +113,10 @@ exports.viewAllBookings = promise.coroutine(function*(req, res) {
                 let decoded = jwtDecode(req.body.token)
                 let username = decoded.un
                 let values = [username]
+                let checkIfLoggedOut = yield services.checkIfLoggedOut(req.body.token)
+                console.log(checkIfLoggedOut)
+                if(checkIfLoggedOut[0].count>0)
+                res.send(responses.sendErrorResponse(res, "Logged out",400))
                 let result = yield services.viewAllBookings(values)
                 res.send(responses.sendResponse(res, "Viewing all bookings", 200, result))
         } catch (error) {
@@ -128,6 +135,9 @@ exports.viewAssignedBookings = promise.coroutine(function*(req, res) {
                 let decoded = jwtDecode(req.body.token)
                 let username = decoded.un
                 let values = [username]
+                let checkIfLoggedOut = yield services.checkIfLoggedOut(req.body.token)
+                if(checkIfLoggedOut[0].count>0)
+                res.send(responses.sendErrorResponse(res, "Logged out",400))
                 let result = yield services.viewAssignedBookings(values)
                 res.send(responses.sendResponse(res, "Viewing assigning bookings", 200, result))
         } catch (error) {
@@ -135,3 +145,18 @@ exports.viewAssignedBookings = promise.coroutine(function*(req, res) {
 
         }
 })
+
+/**
+ * @function <b>logoutDriver</b><br>
+ * @param {string(token)}
+ */
+
+ exports.logoutDriver = promise.coroutine(function*(req,res) {
+         try{
+                let result = yield services.logoutDriver(req.body.token)
+                res.send(responses.sendResponse(res,"Driver logged out",200, result))
+         }
+         catch(error) {
+                res.send(responses.sendResponse(res,"Unable to log out",400))
+         }
+ })

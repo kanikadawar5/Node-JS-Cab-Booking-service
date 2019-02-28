@@ -8,5 +8,6 @@ router.post('/login',validator.validateDriver,controller.loginDriver)
 router.post('/viewAllBookings',controller.viewAllBookings)
 router.post('/completeBooking',controller.completeBooking)
 router.post('/viewAssigneMONGOokings',controller.viewAssignedBookings)
+router.post('/logout',controller.logoutDriver)
 
 module.exports = router

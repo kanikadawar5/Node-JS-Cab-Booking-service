@@ -407,7 +407,7 @@
                 }
             }
         },
-        "/driver/viewAssigneMONGOokings": {
+        "/driver/viewAssignedBookings": {
             "post": {
                 "tags": [
                     "driver"
@@ -476,6 +476,29 @@
                     },
                     "400": {
                         "description": "Error"
+                    }
+                }
+            }
+        },
+        "/driver/logout": {
+            "post": {
+                "tags": [
+                    "driver"
+                ],
+                "description": "Logout a driver",
+                "parameters": [{  
+                    "type": "string",
+                    "description": "token",
+                    "name": "token",
+                    "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successfully loged out"
+                    },
+                    "400": {
+                        "description": "Error in logging out"
                     }
                 }
             }
